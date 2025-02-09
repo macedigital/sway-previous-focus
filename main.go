@@ -8,8 +8,10 @@ import (
 	"github.com/joshuarubin/go-sway"
 )
 
-const prevIdentifier string = "_prev"
-const sentinelValue int64 = -1
+const (
+	prevIdentifier string = "_prev"
+	sentinelValue  int64  = -1
+)
 
 var prevFocus int64 = sentinelValue
 
@@ -38,7 +40,7 @@ func (h handler) Window(ctx context.Context, e sway.WindowEvent) {
 func (h handler) UpdateMark(ctx context.Context) {
 	cmd := fmt.Sprintf("[con_id=%d] mark --add --toggle %s", prevFocus, prevIdentifier)
 
-	if _, err := h.Client.RunCommand(ctx, cmd); err != nil {
+	if _, err := h.RunCommand(ctx, cmd); err != nil {
 		log.Printf("Sway command '%s' failed: %s\n", cmd, err)
 	}
 }
