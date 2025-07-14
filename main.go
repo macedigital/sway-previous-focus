@@ -23,15 +23,16 @@ type handler struct {
 func (h handler) Window(ctx context.Context, e sway.WindowEvent) {
 	switch e.Change {
 	case sway.WindowFocus:
-		if e.Container.Focused && e.Container.ID > 0 && *e.Container.Visible {
-			if prevFocus > 0 && prevFocus != e.Container.ID {
+		isContainer := *e.Container.PID > 0 && *e.Container.Visible && e.Container.Type == "con"
+		if isContainer && prevFocus != e.Container.ID {
+			if prevFocus != sentinelValue {
 				h.UpdateMark(ctx)
 			}
 			prevFocus = e.Container.ID
 		}
 	case sway.WindowClose:
-		if prevFocus == e.Container.ID {
-			h.UpdateMark(ctx)
+		// presumably the container is closed already, remove mark ...
+		if e.Container.ID == prevFocus {
 			prevFocus = sentinelValue
 		}
 	}
